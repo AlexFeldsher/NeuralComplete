@@ -97,18 +97,9 @@ browser.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
         // update action icon
         if (gStatus === 'disabled') {
-            browser.browserAction.setIcon({
-                path: {
-                    48: '../icons/disabled.svg'
-                }
-            });
             stopNet();
         } else {
-            browser.browserAction.setIcon({
-                path: {
-                    48: '../icons/enabled.svg'
-                }
-            });
+           
         }
     }
 });

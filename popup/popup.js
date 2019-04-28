@@ -2,11 +2,24 @@ document.addEventListener('DOMContentLoaded', function(e) {
     browser.storage.local.get().then(function (data) {
         if (data == undefined) {
             browser.storage.local.set({status: 'enabled'});
+
+            browser.browserAction.setIcon({
+                path: {
+                    48: '../icons/enabled.svg'
+                }
+            });
         } else if (data.status === 'disabled') {
             let disable_button = document.getElementById('disable');
             let enable_button = document.getElementById('enable');
             disable_button.hidden = true;
             enable_button.hidden = false;
+
+            browser.browserAction.setIcon({
+                path: {
+                    48: '../icons/disabled.svg'
+                }
+            });
+
         }
     });
 });
@@ -21,6 +34,11 @@ document.getElementById('disable').addEventListener('click', function() {
         type: 'statusChange',
         status: 'disabled'
     });  // notify the background script 
+    browser.browserAction.setIcon({
+        path: {
+            48: '../icons/disabled.svg'
+        }
+    });
 });
 
 document.getElementById('enable').addEventListener('click', function() {
@@ -29,4 +47,9 @@ document.getElementById('enable').addEventListener('click', function() {
         type: 'statusChange',
         status: 'enabled'
     });   // notify the background script
+    browser.browserAction.setIcon({
+        path: {
+            48: '../icons/enabled.svg'
+        }
+    });
 });
