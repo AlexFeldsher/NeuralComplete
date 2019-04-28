@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "NeuralComplete",
-    "version": "1.0",
+    "version": "1.0.1",
 
     "description": "Neural network based text autocomplete",
 
