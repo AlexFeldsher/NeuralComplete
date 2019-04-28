@@ -106,7 +106,7 @@ function loadData() {
             generateNNSvg();
         } else {
             const parser = new DOMParser();
-            parsed = parser.parseFromString(result.data.nn.svg, 'text/html');
+            parsed = parser.parseFromString(result.data.nn.svg, 'image/svg+xml');
             document.getElementById('nn_svg_result').appendChild(parsed.childNodes[0]);
         }
 
@@ -338,7 +338,11 @@ function generateNNSvg() {
     gBackgroundPage.gData.nn.svg_struct = gBackgroundPage.gData.nn.hiddenLayers.toString();
 
     const parser = new DOMParser();
-    parsed = parser.parseFromString(gBackgroundPage.gData.nn.svg, 'text/html');
+    parsed = parser.parseFromString(gBackgroundPage.gData.nn.svg, 'image/svg+xml');
+    let child = document.getElementById('nn_svg_result').firstChild;
+    if (child) {
+        document.getElementById('nn_svg_result').removeChild(child);
+    }
     document.getElementById('nn_svg_result').appendChild(parsed.childNodes[0]);
 }
 
