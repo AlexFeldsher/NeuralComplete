@@ -136,11 +136,11 @@ function updateText(text) {
     resetMsg();
     for (let key_reg of gShortcutMap.keys()) {
         if (key_reg.test(text)) {
-            scMsg.text = text + '->' + gShortcutMap.get(key_reg);
+            scMsg.text = gShortcutMap.get(key_reg);
             scMsg.shortcut = true;
             scMsg.regex = key_reg;
             scMsg.targetWord = gShortcutMap.get(key_reg);
-            scMsg.diff = scMsg.text.length - text.length;
+            scMsg.diff = scMsg.text.length;
             scMsg.source = 'shortcut';
         }
     }
@@ -153,7 +153,7 @@ function updateText(text) {
             let pred = gNnet.run(sub);
             if (pred.length > 0 && pred.split(' ')[0].length < 20) {
                 pred = pred.split(' ')[0];
-                scMsg.text = text + pred;
+                scMsg.text = pred;
                 scMsg.shortcut = true;
                 scMsg.diff = pred.length;
                 scMsg.source = 'nnet';

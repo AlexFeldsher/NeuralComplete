@@ -8,6 +8,7 @@ function run() {
     let _lastMessage = null;
     let _lastMsgId = 0;
     let _lastInMsgType = 'shortcut';
+    let _currPosition = 0;
 
     // request the blacklist
     browser.runtime.sendMessage({
@@ -35,15 +36,19 @@ function run() {
             return;
         }
 
-        const msg = {
-            type: "getShortcut",
-            text: e.target.value,
-            id: _lastMsgId
+
+        if ((e.target.selectionEnd - e.target.selectionStart) == 0) {
+            _currPosition = e.target.selectionStart;
+            const msg = {
+                type: "getShortcut",
+                text: e.target.value.substring(0, _currPosition),
+                id: _lastMsgId,
+            }
+
+            _lastMsgId++;
+
+            browser.runtime.sendMessage(msg);
         }
-
-        _lastMsgId++;
-
-        browser.runtime.sendMessage(msg);
     }
 
     function sendDocText(e) {
@@ -59,13 +64,11 @@ function run() {
     function acceptChange() {
         if (_lastMessage && _lastInMsgType === 'shortcut') {
             if (_lastMessage.shortcut && _lastInputElement.id == _last_keypress.target.id) {
-                const lastPos = _lastInputElement.selectionStart;
-                const origText = _lastInputElement.value.substring(0, lastPos);
-                _lastInputElement.value = origText.replace(_lastMessage.regex, _lastMessage.targetWord + ' ');
+                _lastInputElement.setRangeText(_lastMessage.targetWord, _currPosition - (_lastMessage.regex.toString().length - 3), _currPosition + _lastMessage.targetWord.length + 2, "end");
             }
         }
         if (_lastInMsgType === 'nnet') {
-            _lastInputElement.selectionStart = _lastInputElement.value.length;
+            _lastInputElement.selectionStart = _lastInputElement.selectionEnd;
         }
     }
 
@@ -87,10 +90,20 @@ function run() {
 
         let element = document.activeElement;
 
-        element.value = message.text;
+        if (message.source === 'shortcut') {
+            element.setRangeText('->'.concat(message.text), _currPosition, _currPosition);
+        } else {
+            element.setRangeText(message.text, _currPosition, _currPosition);
+        }
+
         if (message.diff > 0) {
-            element.selectionStart = message.text.length - message.diff;
-            element.selectionEnd = message.text.length;
+            if (message.source === 'shortcut') {
+                element.selectionStart = _currPosition;
+                element.selectionEnd = _currPosition + message.diff + 2;
+            } else {
+                element.selectionStart = _currPosition;
+                element.selectionEnd = _currPosition + message.diff;
+            }
         }
 
         _lastMessage = message;
@@ -110,9 +123,6 @@ function run() {
                     e.target.addEventListener("keydown", (e) => {
                         _last_keypress.key = e.key;
                         _last_keypress.target = e.target;
-                        if (e.key == 'ArrowRight') {
-                            acceptChange();
-                        }
                     });
 
                     e.target.addEventListener("input", sendInput);
