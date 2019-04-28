@@ -10,10 +10,54 @@ document.addEventListener("DOMContentLoaded", function() {
 // save data to storage and update the background script
 document.getElementById("save_button").addEventListener("click", function() {
 
-    const hiddenLayers = getHiddenLayers();
-    const iterations = parseInt(document.getElementById("nn-iterations").value) || 100;
-    const batchSize = parseInt(document.getElementById("nn-batch-size").value) || 5;
-    const str_length = parseInt(document.getElementById("nn-string-length").value) || 20;
+    let hiddenLayers = getHiddenLayers();
+    console.log(hiddenLayers);
+    for (let i = 0; i < hiddenLayers.length; i++) {
+        if (isNaN(hiddenLayers[i])) {
+            console.log('is nan');
+            document.getElementById("nn-str").insertAdjacentHTML('afterend', `
+                <div class="uk-alert-danger" uk-alert>
+                    <a class="uk-alert-close" uk-close></a>
+                    <p>Invalid hidden layers. Must be integers separeted by commas.</p>
+                </div>
+            `);
+            unchangedNotification();
+            return;
+        }
+    }
+    let iterations = parseInt(document.getElementById("nn-iterations").value);
+    if (isNaN(iterations)) {
+        document.getElementById("nn-str").insertAdjacentHTML('afterend', `
+            <div class="uk-alert-danger" uk-alert>
+                <a class="uk-alert-close" uk-close></a>
+                <p>Invalid number of iterations. Must be integer.</p>
+            </div>
+        `);
+        unchangedNotification();
+        return;
+    }
+    let batchSize = parseInt(document.getElementById("nn-batch-size").value);
+    if (isNaN(batchSize)) {
+        document.getElementById("nn-str").insertAdjacentHTML('afterend', `
+            <div class="uk-alert-danger" uk-alert>
+                <a class="uk-alert-close" uk-close></a>
+                <p>Invalid batch size. Must be integer.</p>
+            </div>
+        `);
+        unchangedNotification();
+        return;
+    }
+    let str_length = parseInt(document.getElementById("nn-string-length").value);
+    if (isNaN(str_length)) {
+        document.getElementById("nn-str").insertAdjacentHTML('afterend', `
+            <div class="uk-alert-danger" uk-alert>
+                <a class="uk-alert-close" uk-close></a>
+                <p>Invalid number of characters. Must be integer.</p>
+            </div>
+        `);
+        unchangedNotification();
+        return;
+    }
 
     if (!equalArrays(gBackgroundPage.gData.nn.hiddenLayers, hiddenLayers)) {
         gBackgroundPage.gData.nn.hiddenLayers = hiddenLayers;
@@ -359,4 +403,13 @@ function equalArrays(ar1, ar2) {
     }
 
     return true;
+}
+
+function unchangedNotification() {
+    UIkit.notification({
+        message: 'Changes not saved.',
+        status: 'danger',
+        pos: 'top-center',
+        timeout: 5000
+    });
 }
