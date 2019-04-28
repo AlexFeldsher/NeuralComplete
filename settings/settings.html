@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <title>NeuralComplete</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="uikit/css/uikit.css" />
+    <script src="uikit/js/uikit.js"></script>
+    <script src="uikit/js/uikit-icons.js"></script>
+  </head>
+  <body>
+        <div class="uk-container uk-container-small">
+        <h1>NeuralComplete Extension Settings</h1>
+            <ul uk-tab data-uk-switcher="{connect:'#tabs'}">
+                <li class="uk-active"><a href="">Neural Network</a></li>
+                <li><a href="">Shortcuts</a></li>
+                <li><a href="">Blacklist</a></li>
+                <li><a href="">About</a></li>
+            </ul>
+            <ul id="tabs" class="uk-switcher uk-margin">
+                <li class="uk-active">
+                        <div class='uk-padding-large' id="nn_svg_result"></div>
+                        <h2>Neural Network Configuration</h2>
+                        <form class="uk-form-horizontal uk-margin-large">
+                            <div class="uk-margin" uk-tooltip="Changes to the neural network structure will reset it">
+                                    <label class="uk-form-label" for="form-horizontal-text">Hidden layers</label>
+                                    <div class="uk-form-controls">
+                                        <input class="uk-input" id="nn-hidden-layers" type="text" placeholder="Default: 20,20">
+                                    </div>
+                            </div>
+                            <div class="uk-margin" uk-tooltip="The train set batch size to train the neural network with">
+                                <label class="uk-form-label" for="form-horizontal-select">Batch size</label>
+                                <div class="uk-form-controls">
+                                    <input class="uk-input" id="nn-batch-size" type="text" placeholder="Default: 5">
+                                </div>
+                            </div>
+                            <div class="uk-margin" uk-tooltip="Train the neural network this number of iteration for each batch">
+                                <label class="uk-form-label" for="form-horizontal-select">Number of iterations</label>
+                                <div class="uk-form-controls">
+                                    <input class="uk-input" id="nn-iterations" type="text" placeholder="Default: 100">
+                                </div>
+                            </div>
+                            <div class="uk-margin" uk-tooltip="Train the neural network with strings that have this number of characters">
+                                <label class="uk-form-label" for="form-horizontal-select">Number of characters</label>
+                                <div class="uk-form-controls">
+                                    <input class="uk-input" id="nn-string-length" type="text" placeholder="Default: 20">
+                                </div>
+                            </div>
+                        </form>
+                </li>
+                <li>
+                    <div class="uk-container uk-container-expand">
+                        <h2> Shortcuts </h2>
+                        <h5> Add and remove predefined shortcuts </h5>
+                    </div>
+                    <div class="uk-overflow-auto">
+                        <table class="uk-table uk-table-hover uk-table-middle uk-table-divider uk-table-striped" id="sc_table">
+                            <thead>
+                                <tr>
+                                    <th class="uk-text-nowrap">#</th>
+                                    <th class="uk-text-nowrap">Shortcut</th>
+                                    <th class="uk-text-nowrap">Target</th>
+                                    <th class="uk-table-shrink">
+                                        <button class="uk-button uk-button-default" uk-icon="icon: trash" id="sc_remove_button"></button>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody id="sc_body"></tbody>
+                            <tfoot>
+                                <tr>
+                                    <th></th>
+                                    <th>
+                                        <input class="uk-input" placeholder="Tk" id="sc_input"/>
+                                    </th>
+                                    <th>
+                                        <input class="uk-input" placeholder="Thanks" id="tg_input"/>
+                                    </th>
+                                    <th>
+                                        <button class="uk-button uk-button-default" uk-icon="icon: plus" id="sc_add_button"></button>
+                                    </th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    <hr>
+                </li>
+                <li>
+                <div class="uk-container uk-container-expand">
+                    <h2> Blacklist </h2>
+                    <h5> Blacklist AutoComplete on certain sites </h5>
+                </div>
+
+                <div class="uk-overflow-auto">
+                    <table class="uk-table uk-table-hover uk-table-middle uk-table-divider uk-table-striped" id="bl_table">
+                        <thead>
+                            <tr>
+                                <th class="uk-text-nowrap">#</th>
+                                <th class="uk-text-nowrap">URL</th>
+                                <th class="uk-table-shrink">
+                                    <button class="uk-button uk-button-default" uk-icon="icon: trash" id="bl_remove_button"></button>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody id="bl_body"></tbody>
+                        <tfoot>
+                            <tr>
+                                <th></th>
+                                <th>
+                                    <input class="uk-input" placeholder="URL" id="bl_input"/>
+                                </th>
+                                <th>
+                                    <button class="uk-button uk-button-default" uk-icon="icon: plus" id="bl_add_button"></button>
+                                </th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                </li>
+                <li>
+                    <h4> Description </h4>
+                    <p> This extension lets you train an LSTM neural network by automatically capturing your input in text areas, and the trained network is used to provide you with autocomplete suggestions.<br> The network is trained with strings of length that is defined in the 'Neural Network Configuration' tab.<br> Changing the structure of the neural network by modifying the hidden layers will reset the network and it will require you to retrain it.</p>
+                    <p> Addtionally you can define "shortcuts" that will overide the neural network's suggestions. </p>
+                    <p> User input isn't saved for future training. </p>
+                    <h4> Usage </h4>
+                    <p> Press Ctrl-Space to apply autocompletion. </p>
+                    <h4> External dependencies </h4>
+                    <ul>
+                        <li><a href='https://github.com/BrainJS/brain.js'>BrainJs</a></li>
+                        <li><a href='https://getuikit.com/'>UIkit</a></li>
+                        <li>Icons made by <a href="https://www.freepik.com/" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" 			    title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" 			    title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <hr>
+
+            <div class="uk-grid">
+                <div class="uk-padding-large">
+                    <button class="uk-button uk-button-primary" uk-icon="icon: push"  id="save_button">Save </button>
+                </div>
+                <div class="uk-padding-large">
+                    <button class="uk-button uk-button-danger" uk-icon="icon: history" id="undo_button">Undo </button>
+                </div>
+            </div>
+        </div>
+  </body>
+  <script src="settings.js"></script>
+</html>

@@ -1,0 +1,58 @@
+{
+    "manifest_version": 2,
+    "name": "NeuralComplete",
+    "version": "1.0",
+
+    "description": "Neural network based text autocomplete",
+
+    "content_scripts": [{
+        "matches": ["*://*/*"],
+        "js": [
+            "content_scripts/content_script.js"
+        ]
+    }],
+
+    "background": {
+        "scripts": [
+            "background/browser.js",
+            "background/background.js"
+        ]
+    },
+
+    "web_accessible_resources": [
+        "brain_worker.js"
+    ],
+
+    "applications": {
+        "gecko": {
+            "id": "neuralcomplete@neuralcomplete.com"
+        }
+    },
+
+    "browser_action": {
+        "browser_style": true,
+        "default_title": "NeuralComplete",
+        "default_popup": "popup/popup.html",
+        "default_icon": {
+            "48": "icons/enabled.svg"
+        }
+    },
+
+    "permissions": [
+        "storage",
+        "tabs",
+        "activeTab",
+        "notifications"
+    ],
+
+    "commands": {
+        "accept-sc": {
+            "suggested_key": {
+                "default": "Ctrl+Space"
+            },
+            "description": "Send a 'accept-sc' event"
+        }
+    },
+
+    "content_security_policy": "script-src 'self'; object-src 'self';"
+}
