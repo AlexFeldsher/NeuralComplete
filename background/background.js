@@ -157,7 +157,6 @@ function updateText(text) {
     // if shortcut wasn't found use prediction
     if (!scMsg.shortcut) {
         scMsg.text = text;
-        //let lines = text.split('\n')
         let sub = text.substring(text.length - gStrLength, text.length).replace('\n', ' ');
         if (!(sub === '') && !(sub === ' ')) {
             let pred = gNnet.run(sub);
