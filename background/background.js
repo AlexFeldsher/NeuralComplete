@@ -152,8 +152,8 @@ browser.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 });
 
 function update_blacklist(data) {
+    gBlacklist = new Array();
     for (let i = 0; i < data.length; i++) {
-        gBlacklist = new Array();
         gBlacklist.push(data[i].url);
     }
 }
