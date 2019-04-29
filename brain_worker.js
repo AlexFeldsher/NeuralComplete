@@ -39,7 +39,13 @@ function train() {
         postMessage({type: 'train', status: 'start'});
         network.train(trainSet, {
             iterations: iterations,
-            logPeriod: 10
+            logPeriod: 1,
+            log: (stats) => {
+                postMessage({
+                    type: 'log',
+                    stats: stats,
+                });
+            }
         });
         trainSet = new Array();
         sendNetwork();

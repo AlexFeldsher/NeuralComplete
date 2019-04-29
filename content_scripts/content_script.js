@@ -31,8 +31,8 @@ function run() {
     });
 
     function sendInput(e) {
-        // skip backspaces
-        if (_last_keypress.key == 'Backspace') {
+        // skip backspaces and delete to prevent the same suggestion from appearing
+        if (_last_keypress.key === 'Backspace' || _last_keypress.key === 'Delete') {
             return;
         }
 
@@ -89,6 +89,11 @@ function run() {
         }
 
         let element = document.activeElement;
+
+        // skip if there's a delay and the previous suggestion is still selected
+        if (element.selectionStart != element.selectionEnd) {
+            return;
+        }
 
         if (message.source === 'shortcut') {
             element.setRangeText('->'.concat(message.text), _currPosition, _currPosition);

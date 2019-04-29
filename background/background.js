@@ -7,6 +7,18 @@ let gTrainSet = new Array();
 let gTraining = false;
 var gShortcutMap = new Map();
 var gStrLength = 20;
+let gSpinner = [
+    "⠋",
+    "⠙",
+    "⠹",
+    "⠸",
+    "⠼",
+    "⠴",
+    "⠦",
+    "⠧",
+    "⠇",
+    "⠏"
+];
 
 var gData = {
     shortcuts: new Array(),
@@ -48,6 +60,12 @@ function workerMessage(e) {
         gNnet.fromJSON(JSON.parse(e.data.data));
         gData.nn.net = e.data.data;
         browser.storage.sync.set({'data': gData});
+    } else if (e.data.type === 'log') {
+        console.log(gSpinner[parseInt(e.data.stats.split(' ')[1].replace(',', '')) % gSpinner.length]);
+        console.log(parseInt(e.data.stats.split(' ')[1].replace(',', '')) % gSpinner.length);
+        browser.browserAction.setBadgeText({
+            text: gSpinner[parseInt(e.data.stats.split(' ')[1].replace(',', '')) % gSpinner.length]
+        });
     } else if (e.data.type === 'train') {
         if (e.data.status === 'start') {
             browser.browserAction.setIcon({
@@ -61,10 +79,21 @@ function workerMessage(e) {
                     48: '../icons/enabled.svg'
                 }
             });
+            browser.browserAction.setBadgeText({
+                text: ''
+            });
         }
     }
 }
 //-----
+
+browser.browserAction.setBadgeBackgroundColor({
+    color: 'black'
+});
+
+browser.browserAction.setBadgeTextColor({
+    color: 'white'
+});
 
 browser.commands.onCommand.addListener(function(command) {
     if (command == 'accept-sc') {
@@ -204,6 +233,10 @@ function newNet() {
             hiddenLayers: gData.nn.hiddenLayers
         }
     });
+
+    browser.browserAction.setBadgeText({
+        text: ''
+    });
 }
 
 // start a new neural network thread
@@ -220,6 +253,16 @@ function stopNet() {
             batchSize: gData.nn.batchSize,
             iterations: gData.nn.iterations,
             hiddenLayers: gData.nn.hiddenLayers
+        }
+    });
+
+    browser.browserAction.setBadgeText({
+        text: ''
+    });
+
+    browser.browserAction.setIcon({
+        path: {
+            48: '../icons/disabled.svg'
         }
     });
 }
