@@ -14,12 +14,12 @@ onmessage = function(e) {
         batchSize = e.data.data.batchSize;
         iterations = e.data.data.iterations;
         initNet(e.data.data.hiddenLayers);
-        postMessage(JSON.stringify(network.toJSON()));
+        sendNetwork();
     } else if (e.data.type ==='setNetwork') {
         network.fromJSON(JSON.parse(e.data.data.net));        
         batchSize = e.data.data.batchSize;
         iterations = e.data.data.iterations;
-        postMessage(JSON.stringify(network.toJSON()));
+        sendNetwork();
     } else if (e.data.type === 'setIterations') {
         iterations = e.data.iterations;
     } else if(e.data.type === 'setBatchSize') {
@@ -27,7 +27,7 @@ onmessage = function(e) {
     } else if(e.data.type === 'setHiddenLayers') {
         trainSet = new Array();
         initNet(e.data.hiddenLayers);
-        postMessage(JSON.stringify(network.toJSON()));
+        sendNetwork();
     } else if (e.data.type === 'trainNetwork') {
         trainSet.push(e.data.data);
         train();
@@ -36,14 +36,14 @@ onmessage = function(e) {
 
 function train() {
     if (trainSet.length >= batchSize) {
+        postMessage({type: 'train', status: 'start'});
         network.train(trainSet, {
             iterations: iterations,
             logPeriod: 10
         });
         trainSet = new Array();
-
-        const jsonNet = network.toJSON();
-        postMessage(JSON.stringify(jsonNet));
+        sendNetwork();
+        postMessage({type: 'train', status: 'end'});
     }
 }
 
@@ -56,4 +56,9 @@ function initNet(hl) {
     network.train([all_chars], {
         iterations: 1
     });
+}
+
+function sendNetwork() {
+    const jsonNet = network.toJSON();
+    postMessage({type: 'net', data: JSON.stringify(jsonNet)});
 }

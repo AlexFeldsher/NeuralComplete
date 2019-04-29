@@ -41,10 +41,28 @@ const accptMsg = {
 // init neural network
 var gNNTrainWorker = new Worker('brain_worker.js');
 
-gNNTrainWorker.onmessage = function(e) {
-    gNnet.fromJSON(JSON.parse(e.data));
-    gData.nn.net = e.data;
-    browser.storage.sync.set({'data': gData});
+gNNTrainWorker.onmessage = (e) => { workerMessage(e) };
+
+function workerMessage(e) {
+    if (e.data.type === 'net') {
+        gNnet.fromJSON(JSON.parse(e.data.data));
+        gData.nn.net = e.data.data;
+        browser.storage.sync.set({'data': gData});
+    } else if (e.data.type === 'train') {
+        if (e.data.status === 'start') {
+            browser.browserAction.setIcon({
+                path: {
+                    48: '../icons/training.svg'
+                }
+            });
+        } else if (e.data.status === 'end') {
+            browser.browserAction.setIcon({
+                path: {
+                    48: '../icons/enabled.svg'
+                }
+            });
+        }
+    }
 }
 //-----
 
@@ -175,11 +193,7 @@ function newNet() {
     gNNTrainWorker.terminate();
     gNNTrainWorker = new Worker('brain_worker.js');
 
-    gNNTrainWorker.onmessage = function(e) {
-        gNnet.fromJSON(JSON.parse(e.data));
-        gData.nn.net = e.data;
-        browser.storage.sync.set({'data': gData});
-    }
+    gNNTrainWorker.onmessage = (e) => { workerMessage(e) };
 
     gNNTrainWorker.postMessage({
         type: 'newNetwork',
@@ -197,11 +211,7 @@ function stopNet() {
     gNNTrainWorker.terminate();
     gNNTrainWorker = new Worker('brain_worker.js');
 
-    gNNTrainWorker.onmessage = function(e) {
-        gNnet.fromJSON(JSON.parse(e.data));
-        gData.nn.net = e.data;
-        browser.storage.sync.set({'data': gData});
-    }
+    gNNTrainWorker.onmessage = (e) => { workerMessage(e) };
 
     gNNTrainWorker.postMessage({
         type: 'setNetwork',
