@@ -237,6 +237,20 @@ function newNet() {
     browser.browserAction.setBadgeText({
         text: ''
     });
+
+    if (gStatus === 'enabled') {
+        browser.browserAction.setIcon({
+            path: {
+                48: '../icons/enabled.svg'
+            }
+        });
+    } else if (gStatus === 'disabled') {
+        browser.browserAction.setIcon({
+            path: {
+                48: '../icons/enabled.svg'
+            }
+        });
+    }
 }
 
 // start a new neural network thread
